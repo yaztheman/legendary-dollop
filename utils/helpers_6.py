@@ -1,50 +1,43 @@
-"""Utility functions for legendary-dollop"""
+"""
+Legendary Dollop - Feature Enhancement
+Legendary Dollop
+"""
 
-import datetime
-from typing import Optional, List, Dict
-
-def format_date(date: datetime.datetime) -> str:
-    """Format date to string.
+def process_data(data):
+    """Process and validate input data"""
+    if not data:
+        raise ValueError("Data cannot be empty")
     
-    Args:
-        date: Date object to format
-        
-    Returns:
-        Formatted date string
-    """
-    if not date:
-        return ''
-    return date.strftime('%Y-%m-%d')
-
-def validate_email(email: str) -> bool:
-    """Validate email format.
+    processed = []
+    for item in data:
+        if isinstance(item, dict):
+            processed.append(validate_item(item))
+        else:
+            processed.append(str(item).strip())
     
-    Args:
-        email: Email address to validate
-        
-    Returns:
-        True if valid, False otherwise
-    """
-    if not email:
-        return False
-    import re
-    pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-    return bool(re.match(pattern, email))
+    return processed
 
-def safe_divide(a: float, b: float) -> Optional[float]:
-    """Safely divide two numbers.
+def validate_item(item):
+    """Validate individual item structure"""
+    required_fields = ['id', 'name']
+    for field in required_fields:
+        if field not in item:
+            raise ValueError(f"Missing required field: {field}")
+    return item
+
+class DataProcessor:
+    """Main data processing class"""
     
-    Args:
-        a: Numerator
-        b: Denominator
+    def __init__(self, config=None):
+        self.config = config or {}
+        self.cache = {}
+    
+    def process(self, data):
+        """Main processing method"""
+        cache_key = hash(str(data))
+        if cache_key in self.cache:
+            return self.cache[cache_key]
         
-    Returns:
-        Result or None if division by zero
-    """
-    if b == 0:
-        return None
-    return a / b
-
-def filter_valid_items(items: List[Dict]) -> List[Dict]:
-    """Filter out invalid items from list."""
-    return [item for item in items if item and isinstance(item, dict)]
+        result = process_data(data)
+        self.cache[cache_key] = result
+        return result
