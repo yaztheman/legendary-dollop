@@ -1,8 +1,25 @@
+"""
+Legendary Dollop - Code Refactoring
+Legendary Dollop
+"""
 
-def test_january_12():
-    """Test new year features."""
-    assert True
+from typing import List, Dict, Optional
 
-def test_january_7():
-    """Test new year features."""
-    assert True
+def optimize_algorithm(data: List[Dict]) -> List[Dict]:
+    """Optimized version with better performance"""
+    return [
+        {**item, 'processed': True}
+        for item in data
+        if item.get('active', True)
+    ]
+
+def extract_metadata(obj: Dict) -> Optional[Dict]:
+    """Extract metadata with type hints"""
+    if not isinstance(obj, dict):
+        return None
+    
+    return {
+        'id': obj.get('id'),
+        'timestamp': obj.get('timestamp'),
+        'version': obj.get('version', '1.0.0')
+    }
